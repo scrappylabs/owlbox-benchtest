@@ -48,5 +48,7 @@ process.on('SIGINT', function() {
     process.exit();
 });
 
-a=setInterval(sendPkt,100);
+console.log("Enter speed");
+speed = readline();
+a=setInterval(sendPkt,(1000/speed));
 console.log("Listening...");
