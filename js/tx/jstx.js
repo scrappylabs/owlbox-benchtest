@@ -20,35 +20,30 @@ socket.on ("error", function (error) {
 });
 
 
-socket.on ("message", function (buffer, source) {
+//socket.on ("message", function (buffer, source) {
 	//console.log(buffer.toString().substr(14)) //Don't change this number.
-	recvPkt++;
+	//recvPkt++;
     //console.log ("received " + buffer.length + " bytes from " + source);
-});
+//});
 
 
 var buffer = Buffer.from("Hello, Jordan!", "utf-8");
 function sendPkt(){
 socket.send (buffer, 0, buffer.length, "1.1.1.1", function (error, bytes) {
-    if (error){
-		console.error(error);
-        console.log (error.toString ());
-	}else{
 		sentPkt++;
-		console.log("Packet Sent!");
-	}
+		console.log("TX: "+sentPkt);
 });
 
 }
 
 process.on('SIGINT', function() {
-    console.log("Done");
+    console.log("Done!");
 	socket.close ();
-	console.log("Sent Pkt: " + sentPkt + ", Recv Pkt: " + recvPkt);
+	console.log("Sent Pkt: " + sentPkt);
     process.exit();
 });
 
-console.log("Enter speed");
-speed = readline();
-a=setInterval(sendPkt,(1000/speed));
-console.log("Listening...");
+//console.log("Enter speed");
+//speed = readline();
+a=setInterval(sendPkt,(0.001));
+console.log("Sending...");
