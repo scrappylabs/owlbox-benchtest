@@ -2,7 +2,7 @@ import socket
 #from thread import *
 
 # 1.Gets the local ip/ip over LAN.
-HOST =socket.gethostbyname(socket.gethostname()) 
+HOST ='192.168.7.7'
 
 print (HOST)
 
