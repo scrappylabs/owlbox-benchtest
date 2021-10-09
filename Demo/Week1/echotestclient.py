@@ -12,4 +12,4 @@ while True:
     message = raw_input(">>>  ")    
     s.sendall(message)
     reply = s.recv(1024)
-    print reply
+    print (reply)
