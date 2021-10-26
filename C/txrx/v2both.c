@@ -47,6 +47,82 @@
 
 int main(int argc, char *argv[])
 {
+	pthread_t thread_id;
+	printf("Starting...");
+	pthread_create(&thread_id, NULL, receive, NULL);
+	pthread_join(thread_id, NULL);
+	printf("Received");
+	exit(0);
+}
+
+int *receive(){
+	int sockfd, ret, i;
+	ssize_t numbytes;
+	struct sockaddr saddr;
+	int saddr_len = sizeof (saddr);
+	uint8_t buf[BUF_SIZ];
+	char ifName[IFNAMSIZ];
+	
+	strcpy(ifName, DEFAULT_IF);
+
+	/* Header structures */
+	struct ether_header *eh = (struct ether_header *) buf;
+
+	/* Open AF_PACKET socket, listening for EtherType ETHER_TYPE */
+	if ((sockfd = socket(AF_PACKET, SOCK_RAW, htons(ETHER_TYPE))) == -1) {
+		perror("error listener: socket");	
+		return -1;
+	}
+
+	/* Bind to device */
+	if (setsockopt(sockfd, SOL_SOCKET, SO_BINDTODEVICE, ifName, IFNAMSIZ-1) == -1)	{
+		perror("SO_BINDTODEVICE");
+		close(sockfd);
+		exit(EXIT_FAILURE);
+	}
+
+repeat:	/*printf("listener: Waiting to recvfrom...\n")*/;
+	numPkt++;
+	printf("RX: %i\n", numPkt);
+	numbytes = recvfrom(sockfd, buf, BUF_SIZ, 0, &saddr, (socklen_t *)&saddr_len);
+	//printf("listener: got packet %lu bytes\n", numbytes);
+
+	struct ethhdr *eth = (struct ethhdr *)(buf);
+//printf("\nEthernet Header\n");
+//printf("\t|-Source Address : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n",eth->h_source[0],eth->h_source[1],eth->h_source[2],eth->h_source[3],eth->h_source[4],eth->h_source[5]);
+//printf("\t|-Destination Address : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n",eth->h_dest[0],eth->h_dest[1],eth->h_dest[2],eth->h_dest[3],eth->h_dest[4],eth->h_dest[5]);
+//printf("\t|-Protocol : %.2X\n",eth->h_proto);
+	
+	i=sizeof(struct ethhdr);
+i++;
+i+=3;
+i+=3;
+i+=3;
+i++;
+i+=2;
+i+=1;
+
+	/*printf("\t\t|Version: %d\n", buf[i]); i++;
+	printf("\t\t|PSID: %d\n", buf[i]); i+=3;
+	printf("\t\t|Channel: %d\n", buf[i]); i+=3;
+	printf("\t\t|Data Rate: %.1f\n", (double)(buf[i]/2)); i+=3;
+	printf("\t\t|Tx Power: %d\n", buf[i]); i++;
+	printf("\t\t|WAVE Element ID: %d\n", buf[i]); i++;
+
+	printf("\t\t|WSM Length: %d\n", ((int)buf[i])+((int)buf[i+1]));* 
+	i+=2;
+	
+	//i+=9; //Skipping other items...
+	
+	
+	//struct iphdr *ip = (struct iphdr*)(buffer + sizeof(struct ethhdr));*/
+//print_BSM(buf,numbytes,i);
+done:	goto repeat;
+
+	close(sockfd);
+	return ret;
+}
+int send(){
 	int sockfd;
 	struct ifreq if_idx;
 	struct ifreq if_mac;
