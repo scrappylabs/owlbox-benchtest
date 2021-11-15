@@ -44,8 +44,8 @@ def loop_pkt():
         print("Received packet %i" % pktnumrcv)
         pktnumrcv = pktnumrcv + 1
         velocity = int(str(r).strip()[-2:-1])
-        print(velocity)
-        #print(str(r[0]).strip()[-2:])
+        #print(velocity)
+        print(str(r[0]).strip()[-5:])
         pktdata = r
         #print("%s" % r)
 

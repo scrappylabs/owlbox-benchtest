@@ -15,7 +15,7 @@ while True:
     s1.send(bytes(r))
     #print(r)
     pktnum = pktnum+1
-    #print("%s" % r)
+    print("%s" % r)
 
 
 def signal_handler(sig, frame):
