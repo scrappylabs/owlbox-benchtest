@@ -317,7 +317,11 @@ int send(){
 
 	int pktSend = 0;	
 	printf("test");
-	do {
+	
+
+
+	void* sender(){
+		do {
 	/* Send packet */
 		if (sendto(sockfd, sendbuf, sizeof(sendbuf), 0, (struct sockaddr*)&socket_address, sizeof(socket_address)) < 0)
 		{	
@@ -329,7 +333,47 @@ int send(){
 		}
 	
 	}while(pktSend> 0);
+	}
 
+	void* receive(){
+		repeat:	/*printf("listener: Waiting to recvfrom...\n")*/;
+		numPkt++;
+	printf("RX: %i\n", numPkt);
+	numbytes = recvfrom(sockfd, buf, BUF_SIZ, 0, &saddr, (socklen_t *)&saddr_len);
+	//printf("listener: got packet %lu bytes\n", numbytes);
+
+	struct ethhdr *eth = (struct ethhdr *)(buf);
+//printf("\nEthernet Header\n");
+//printf("\t|-Source Address : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n",eth->h_source[0],eth->h_source[1],eth->h_source[2],eth->h_source[3],eth->h_source[4],eth->h_source[5]);
+//printf("\t|-Destination Address : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n",eth->h_dest[0],eth->h_dest[1],eth->h_dest[2],eth->h_dest[3],eth->h_dest[4],eth->h_dest[5]);
+//printf("\t|-Protocol : %.2X\n",eth->h_proto);
+	
+	i = sizeof(struct ethhdr);
+i++;
+i+=3;
+i+=3;
+i+=3;
+i++;
+i+=2;
+i+=1;
+
+	/*printf("\t\t|Version: %d\n", buf[i]); i++;
+	printf("\t\t|PSID: %d\n", buf[i]); i+=3;
+	printf("\t\t|Channel: %d\n", buf[i]); i+=3;
+	printf("\t\t|Data Rate: %.1f\n", (double)(buf[i]/2)); i+=3;
+	printf("\t\t|Tx Power: %d\n", buf[i]); i++;
+	printf("\t\t|WAVE Element ID: %d\n", buf[i]); i++;
+
+	printf("\t\t|WSM Length: %d\n", ((int)buf[i])+((int)buf[i+1]));* 
+	i+=2;
+	
+	//i+=9; //Skipping other items...
+	
+	
+	//struct iphdr *ip = (struct iphdr*)(buffer + sizeof(struct ethhdr));*/
+//print_BSM(buf,numbytes,i);
+done:	goto repeat;
+	}
 
 	//closelog();
 	//return 0;

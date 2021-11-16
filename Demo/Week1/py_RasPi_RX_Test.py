@@ -43,9 +43,10 @@ def loop_pkt():
         r=s.recv(2000)
         print("Received packet %i" % pktnumrcv)
         pktnumrcv = pktnumrcv + 1
-        velocity = int(str(r).strip()[-2:-1])
-        print(velocity)
-        #print(str(r[0]).strip()[-2:])
+        velocity = float(str(r).strip()[--:0])
+        print("Numerical velocity: "+str(velocity)+"\n")
+        print("Velocity: "+str(r).strip()[-5:0])
+        #print("Packet: "+ str(r))
         pktdata = r
         #print("%s" % r)
 
@@ -65,11 +66,11 @@ def update_LED():
         #if (velocity > 200):
             #velocity = 0
         for i in range(strip.numPixels()):
-            strip.setPixelColor(i, Color(velocity*20, 0, 0))
+            strip.setPixelColor(i, Color(int(velocity)*20, 0, 0))
             strip.show()
             time.sleep(2/1000)
         #velocity = velocity + 1
-        print("velocity ", velocity)
+        #print("velocity ", velocity)
         
 
 
@@ -81,7 +82,7 @@ if __name__ == '__main__':
 
 t1.start()
 #t2.start()
-t3.start()
+#t3.start()
 
 
 def signal_handler(sig, frame):
